@@ -1,0 +1,3 @@
+[submodule "XcodeGen"]
+	path = XcodeGen
+	url = https://github.com/yonaskolb/XcodeGen.git
