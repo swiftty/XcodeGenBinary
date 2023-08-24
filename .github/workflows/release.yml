@@ -1,0 +1,117 @@
+name: Release
+on:
+  push:
+    branches:
+      - release/**
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-13]
+        include:
+          - os: ubuntu-latest
+            setup-swift: true
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+    - uses: swift-actions/setup-swift@v1
+      with:
+        swift-version: "5.8.1"
+      if: ${{ matrix.setup-swift }}
+    - name: select Xcode
+      run: |
+        sudo xcode-select --switch "/Applications/Xcode_14.3.1.app"
+      if: ${{ !matrix.setup-swift }}
+    - uses: swiftty/swiftpm-artifactbundle-builder@main
+      with:
+        path: XcodeGen
+        copy-resources: SettingPresets
+
+  release:
+    needs: build
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: git settings
+      run: |
+        # https://qiita.com/thaim/items/3d1a4d09ec4a7d8844ce
+        git config --local user.name "github-actions[bot]"
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+    - name: read version
+      id: specific-version
+      run: |
+        version=$(echo "${{ github.ref_name }}" | sed 's/^release\///')
+        echo "version=$version" >> "$GITHUB_OUTPUT"
+    - uses: swiftty/swiftpm-artifactbundle-bundler@v1
+      id: bundler
+      with:
+        variants-version: ${{ steps.specific-version.outputs.version }}
+    - name: update Package.swift
+      run: |
+        filename=$(echo "${{ steps.bundler.outputs.checksums }}" | cut -d " " -f 3 | cut -d "/" -f 3)
+        new_url="https://github.com/swiftty/XcodeGenBinary/releases/download/${{ steps.specific-version.outputs.version }}/$filename"
+        new_checksum=$(echo "${{ steps.bundler.outputs.checksums }}" | cut -d " " -f 1)
+
+        sed "s|<url>|$new_url|" Package.template.swift > Package.template.swift.bak
+        sed "s|<checksum>|$new_checksum|" Package.template.swift.bak > Package.swift
+        rm -f Package.template.swift.bak
+
+        git add Package.swift
+        git commit -m 'update Package.swift'
+        git push origin HEAD
+
+    - uses: softprops/action-gh-release@v1
+      with:
+        generate_release_notes: true
+        tag_name: ${{ steps.specific-version.outputs.version }}
+        target_commitish: ${{ github.ref_name }}
+        body: |
+          ## Checksums
+
+          - for `.binaryTarget(name:url:checksum:)`
+
+            ```
+            ${{ steps.bundler.outputs.checksums }}
+            ```
+
+          ---
+        files: |
+          ${{ steps.bundler.outputs.path }}/**
+
+  git:
+    needs: release
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: 'main'
+    - name: git settings
+      run: |
+        # https://qiita.com/thaim/items/3d1a4d09ec4a7d8844ce
+        git config --local user.name "github-actions[bot]"
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+    - name: merge to main
+      run: |
+        git fetch origin ${{ github.ref_name }}
+        git merge origin/${{ github.ref_name }}
+        git push origin main
+        git push origin --delete ${{ github.ref_name }}
+
+  git-clean:
+    needs: release
+    if: failure()
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: delete working branch
+      run: |
+        git push origin --delete ${{ github.ref_name }}
