@@ -1,6 +1,6 @@
 #!/bin/bash
 
-submodule_path="SwiftLint"
+submodule_path="XcodeGen"
 
 get_latest_tag() {
     cd "$submodule_path" || exit
