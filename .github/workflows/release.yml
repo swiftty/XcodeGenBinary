@@ -19,7 +19,7 @@ jobs:
         submodules: true
     - uses: swift-actions/setup-swift@v1
       with:
-        swift-version: "5.8.1"
+        swift-version: "5.9"
       if: ${{ matrix.setup-swift }}
     - name: select Xcode
       run: |
