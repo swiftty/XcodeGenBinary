@@ -33,6 +33,7 @@ jobs:
     - uses: swiftty/swiftpm-artifactbundle-builder@v3
       with:
         path: XcodeGen
+        copy-resources: LICENSE
 
   release:
     needs: build
