@@ -1,0 +1,6 @@
+#!/bin/bash
+
+submodule_url="https://github.com/yonaskolb/XcodeGen"
+submodule_path="XcodeGen"
+
+git clone "$submodule_url" "$submodule_path" -b $(cat version) --depth 1
