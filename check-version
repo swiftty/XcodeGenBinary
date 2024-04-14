@@ -1,14 +1,10 @@
 #!/bin/bash
 
-submodule_url="https://github.com/yonaskolb/XcodeGen"
-submodule_path="XcodeGen"
-
 get_latest_tag() {
-    git clone "$submodule_url" "$submodule_path"
-    cd "$submodule_path" || exit
-
-    git fetch --tags
-    latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1))
+    latest_tag=$(gh api \
+        -H "Accept: application/vnd.github+json" \
+        -H "X-GitHub-Api-Version: 2022-11-28" \
+        /repos/OWNER/REPO/releases/latest | jq -r '.tag_name')
     echo "$latest_tag"
 }
 
