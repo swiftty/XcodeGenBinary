@@ -7,6 +7,8 @@ on:
 jobs:
   check_and_commit:
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Generate GitHub Apps token
         id: generate
