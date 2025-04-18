@@ -16,6 +16,12 @@ jobs:
     container:
       image: ${{ matrix.setup-swift && 'swift:6.1' || '' }}
     steps:
+    - name: Install tools on container
+      run: |
+        apt update
+        apt install -y jq
+      if: ${{ matrix.setup-swift }}
+
     - uses: actions/checkout@v4
       with:
         submodules: true
