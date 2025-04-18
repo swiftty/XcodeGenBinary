@@ -13,6 +13,8 @@ jobs:
           - os: ubuntu-latest
             setup-swift: true
     runs-on: ${{ matrix.os }}
+    container:
+      image: ${{ matrix.setup-swift && 'swift:6.1' || '' }}
     steps:
     - uses: actions/checkout@v4
       with:
@@ -22,13 +24,9 @@ jobs:
       run: |
         bash clone-version
 
-    - uses: swift-actions/setup-swift@v2
-      with:
-        swift-version: "5.9"
-      if: ${{ matrix.setup-swift }}
     - name: select Xcode
       run: |
-        sudo xcode-select --switch "/Applications/Xcode_15.2.app"
+        sudo xcode-select --switch "/Applications/Xcode_16.3.app"
       if: ${{ !matrix.setup-swift }}
     - uses: swiftty/swiftpm-artifactbundle-builder@v3
       with:
