@@ -34,7 +34,7 @@ jobs:
       run: |
         sudo xcode-select --switch "/Applications/Xcode_16.3.app"
       if: ${{ !matrix.setup-swift }}
-    - uses: swiftty/swiftpm-artifactbundle-builder@v3
+    - uses: swiftty/swiftpm-artifactbundle-builder@v4
       with:
         path: XcodeGen
         copy-resources: LICENSE
