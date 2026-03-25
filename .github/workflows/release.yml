@@ -8,19 +8,20 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-15]
         include:
+          - os: macos-26
+            xcode: "/Applications/Xcode_26.3.app"
           - os: ubuntu-latest
-            setup-swift: true
+            container: swift:6.2
     runs-on: ${{ matrix.os }}
     container:
-      image: ${{ matrix.setup-swift && 'swift:6.1' || '' }}
+      image: ${{ matrix.container }}
     steps:
       - name: Install tools on container
+        if: ${{ matrix.container != null }}
         run: |
           apt update
           apt install -y jq
-        if: ${{ matrix.setup-swift }}
 
       - uses: actions/checkout@v6
         with:
@@ -31,9 +32,9 @@ jobs:
           bash clone-version
 
       - name: select Xcode
-        run: |
-          sudo xcode-select --switch "/Applications/Xcode_26.3.app"
-        if: ${{ !matrix.setup-swift }}
+        if: ${{ matrix.xcode != null }}
+        run: sudo xcode-select --switch "${{ matrix.xcode }}"
+
       - uses: swiftty/swiftpm-artifactbundle-builder@v4
         with:
           path: XcodeGen
