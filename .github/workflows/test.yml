@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         include:
-          # renovate: datasource=github-runners packageName=github-actions
+          # renovate: datasource=github-runners
           - os: macos-26
             xcode: "/Applications/Xcode_26.3.app"
           - os: ubuntu-latest
