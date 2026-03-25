@@ -10,8 +10,8 @@
       "description": "Update in matrix declarations",
       "fileMatch": ["\\.github/.*\\.ya?ml"],
       "matchStrings": [
-        "# renovate: datasource=(?<datasource>[a-z-]+?)(?: versioning=(?<versioning>[a-z-]+?))?\\s*-?\\s*[a-zA-Z0-9_-]+:\\s*(?<packageName>[^-]+)-(?<currentValue>[^\\s]+)\\s",
-        "# renovate: datasource=(?<datasource>[a-z-]+?)(?: versioning=(?<versioning>[a-z-]+?))?\\s*-?\\s*[a-zA-Z0-9_-]+:\\s*(?<packageName>[^:]+):(?<currentValue>[^\\s]+)\\s",
+        "# renovate: datasource=(?<datasource>[a-z-]+?)(?: versioning=(?<versioning>[a-z-]+?))?\\s*-?\\s*[a-zA-Z0-9_-]+:\\s*(?<packageName>[^-\\s]+)-(?<currentValue>[^\\s]+)\\s",
+        "# renovate: datasource=(?<datasource>[a-z-]+?)(?: versioning=(?<versioning>[a-z-]+?))?\\s*-?\\s*[a-zA-Z0-9_-]+:\\s*(?<packageName>[^:\\s]+):(?<currentValue>[^\\s]+)\\s",
         "# renovate: datasource=(?<datasource>[a-z-]+?)(?: depName=(?<depName>.+?))? packageName=(?<packageName>.+?)(?: versioning=(?<versioning>[a-z-]+?))?\\s*-?\\s*[a-zA-Z0-9_-]+:\\s*(?<currentValue>[^\\s]+)\\s"
       ]
     }
