@@ -11,8 +11,8 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "XcodeGenBinary",
-            url: "https://github.com/swiftty/XcodeGenBinary/releases/download/2.45.3/XcodeGenBinary.artifactbundle.zip",
-            checksum: "6ae679923e5cbddfdb63ded684d9d546bd1ac64e684bb0981372f8b3dfec61ea"
+            url: "https://github.com/swiftty/XcodeGenBinary/releases/download/2.45.4/XcodeGenBinary.artifactbundle.zip",
+            checksum: "e9f9175ff5521ae41e6856b6e82ac4b4c6208c8bfb99aaf0991f180646d40905"
         ),
         .plugin(
             name: "XcodeGenPlugin",
